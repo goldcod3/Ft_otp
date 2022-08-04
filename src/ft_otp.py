@@ -6,27 +6,38 @@ from cryptor import *
 def main():
     args = config_args()
     # [-k] Generate a new Totp pin autentication **
-    if args.key_gen != None:
-        hash_ = get_totp(args.key_gen)
-        if hash_ != None:
-            print(hash_)
+    if args.key_gen != None and args.interactive == None:
+        passwd = input("Enter the encryption key for the ft_otp file: \n")
+        pin_ = get_totp(args.key_gen, passwd)
+        if pin_ != None:
+            print(pin_)
     # [-g] Change key for totp and save on file 'ft_otp.key'
     if args.new_key != None:
         try:
             with open(args.new_key, "rb") as hex_file:
                 new_key = hex_file.read()
-            password = input("Enter the encryption key of the ft_otp file: \n")
+            password = input("Enter the encryption key for the ft_otp file: \n")
             if change_totp_key(password, new_key):
-                print("SUCCESSFULL CHANGE OF KEY OF THE FILE 'ft_otp.key'.")
+                print("SUCCESSFULL CHANGE THE KEY OF THE FILE 'ft_otp.key'.")
         except:
             print("ERROR OPEN FILE KEY.HEX -> Try with another file 'key.hex' [-rk].")
 
     # Bonus options
     ## Change password for encrypt file 'ft_otp.key'
     if args.new_pass != None:
-        old_pass = input("Enter the encryption key of the ft_otp file: \n")
+        old_pass = input("Enter the encryption key for the ft_otp file: \n")
         if change_encrypt_pass(old_pass,args.new_pass):
-            print("SUCCESSFULL CHANGE OF ENCRYPTION KEY OF THE 'ft_otp.key'.")
+            print("SUCCESSFULL CHANGE THE ENCRYPTION KEY OF THE 'ft_otp.key'.")
+    # Interactive Mode
+    if args.interactive != None and args.key_gen != None:
+        try:
+            if int(args.interactive) > 1:
+                passwd = input("Enter the encryption key for the ft_otp file: \n")
+                totp_interactive(args.key_gen,passwd,int(args.interactive))
+            else:
+                print("ERROR SECONDS -> Try with a number greater than 1")
+        except ValueError:
+                print("ERROR VALUE SECONDS -> Try again with a number greater than 1.")
     ## Random key.hex for ft_otp.key
     if args.random_key == True:
         random_totp_key = get_random_key()
@@ -51,6 +62,7 @@ def config_args():
     
     # Bonus options   
     parser.add_argument("-p","--new-pass", default=None, help="[-p + 'new_pass_base64'] Set a new password Base64 for encrypt 'ft_otp.key'.")
+    parser.add_argument("-i","--interactive", default=None, help="[-k + 'ft_otp.key' -i + seconds] Interactive mode.")
     parser.add_argument("-rk","--random-key", default=False, action='store_true', help="Generate a random key autentication in file 'key.hex'.") 
     parser.add_argument("-rp","--random-pass", default=False, action='store_true', help="Generate a random password Base64 for encrypt 'ft_otp.key'.")
     

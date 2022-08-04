@@ -1,6 +1,6 @@
 import hmac
 from datetime import datetime
-from time import time
+from time import sleep, time
 from cryptor import *
 
 # Default Variables
@@ -14,23 +14,21 @@ default_file = "ft_otp.key"
 def get_time_key(time_count):
     time_ = datetime.utcfromtimestamp(time())
     timestr_ = datetime.strftime(time_, format_date)
-    return str(int(time() / time_count)), timestr_
+    return str(int(time() / time_count))
 
 # Get HOTP Hash
 def get_hotp(file, passwd):
-    time_, time_msg = get_time_key(default_time_count)
+    time_ = get_time_key(default_time_count)
     key = get_key(file,passwd)
     if key != None:
-        print(time_msg)
         hash_ = hmac.new(key, time_.encode('utf-8'), default_digest)
         return hash_.hexdigest()
     else:
         return None
 
 # Get TOTP Pin
-def get_totp(file):
-    passwd = input("Enter the encryption key of the ft_otp file: \n")
-    hotp_ = get_hotp(file, passwd)
+def get_totp(file, password):
+    hotp_ = get_hotp(file, password)
     if hotp_ != None:
         decimal = str(int(hotp_, 16))
         rev_decimal = decimal[::-1]
@@ -78,9 +76,27 @@ def change_totp_key(password, new_key):
                 if encrypt_file(default_file, password.encode('utf-8')):
                     return True
             else:
-                print("ERROR IN KEY TO DECRYPT -> Try again.")
+                print("ERROR IN KEY TO DECRYPT OR IN FILE.KEY -> Try again.")
         else:
             print("ERROR NEW KEY HEX -> Try another key.")
         return False
     except FileNotFoundError:
         verify_file(default_file)
+
+# Interactive Mode TOTP
+def totp_interactive(file, passwd, sec):
+    count_time = 0
+    while count_time <= sec:
+        time_ = datetime.utcfromtimestamp(time())
+        timestr_ = datetime.strftime(time_, format_date)
+        hash_ = get_hotp(file, passwd) 
+        if hash_ != None:
+            pin_ = get_totp(file, passwd)
+            print("TIME      --> ", timestr_)
+            print("HASH HOTP --> ", hash_)
+            print("PIN TOTP  --> ", pin_)
+            print("<*----------------------------------------*>")
+            sleep(2)
+            count_time += 2
+        else:
+            break
