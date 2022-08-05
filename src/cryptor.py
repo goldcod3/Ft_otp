@@ -35,29 +35,6 @@ def decrypt_file(file, key):
     except Exception:
         return False
 
-# Verify file 'ft_otp.key'
-def verify_file(file):
-    if file == "ft_otp.key":
-        print("ERROR NOT FOUND FILE.KEY!")
-        new_key = get_random_key()
-        with open(file,"wb") as w_file:
-            w_file.write(new_key)
-        passwd = input("Enter the new encryption key of the ft_otp file [Base64]: \n")
-        if encrypt_file(file, passwd):
-            print("File 'Ft_otp.key created, retry command -k!'")
-            with open("ft_master.key","wb") as w_master:
-                w_master.write(passwd.encode('utf-8'))
-            print("A password has been saved in the file 'ft_master.key'")
-        else:
-            passwd = get_random_pass()
-            encrypt_file(file, passwd)
-            print("File 'Ft_otp.key created, retry command -k!'")
-            print("ERROR PASSWORD -> A new random key has been generated in the file 'ft_master.key'")
-            return True
-    else:
-        print("ERROR FILE.KEY -> Try with ft_otp.key")
-        return False
-
 # Get key from 'ft_otp.key' 
 def get_key(file,passwd):
     try:
@@ -66,8 +43,6 @@ def get_key(file,passwd):
             encrypt_data = r_otp.read()
         decrypt_data = fern.decrypt(encrypt_data)
         return decrypt_data
-    except FileNotFoundError:
-        verify_file(file)
     except Exception:
         print("ERROR PASSWORD FILE.KEY -> Try with another password.")
     return None

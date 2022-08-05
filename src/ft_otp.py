@@ -1,4 +1,5 @@
 import argparse
+from getpass import getpass
 from encode import *
 from cryptor import *
 
@@ -7,33 +8,37 @@ def main():
     args = config_args()
     # [-k] Generate a new Totp pin autentication **
     if args.key_gen != None and args.interactive == None:
-        passwd = input("Enter the encryption key for the ft_otp file: \n")
-        pin_ = get_totp(args.key_gen, passwd)
-        if pin_ != None:
-            print(pin_)
+        if verify_file(args.key_gen):
+            passwd = getpass("Enter the encryption key for the ft_otp file: \n")
+            pin_ = get_totp(args.key_gen, passwd)
+            if pin_ != None:
+                print(pin_)
     # [-g] Change key for totp and save on file 'ft_otp.key'
     if args.new_key != None:
         try:
             with open(args.new_key, "rb") as hex_file:
                 new_key = hex_file.read()
-            password = input("Enter the encryption key for the ft_otp file: \n")
-            if change_totp_key(password, new_key):
-                print("SUCCESSFULL CHANGE THE KEY OF THE FILE 'ft_otp.key'.")
+            if verify_file('ft_otp.key'):
+                password = getpass("Enter the encryption key for the ft_otp file: \n")
+                if change_totp_key(password, new_key):
+                    print("SUCCESSFULL CHANGE THE KEY OF THE FILE 'ft_otp.key'.")
         except:
             print("ERROR OPEN FILE KEY.HEX -> Try with another file 'key.hex' [-rk].")
 
     # Bonus options
     ## Change password for encrypt file 'ft_otp.key'
     if args.new_pass != None:
-        old_pass = input("Enter the encryption key for the ft_otp file: \n")
-        if change_encrypt_pass(old_pass,args.new_pass):
-            print("SUCCESSFULL CHANGE THE ENCRYPTION KEY OF THE 'ft_otp.key'.")
+        if verify_file('ft_otp.key'):
+            old_pass = getpass("Enter the encryption key for the ft_otp file: \n")
+            if change_encrypt_pass(old_pass,args.new_pass):
+                print("SUCCESSFULL CHANGE THE ENCRYPTION KEY OF THE 'ft_otp.key'.")
     # Interactive Mode
     if args.interactive != None and args.key_gen != None:
         try:
             if int(args.interactive) > 1:
-                passwd = input("Enter the encryption key for the ft_otp file: \n")
-                totp_interactive(args.key_gen,passwd,int(args.interactive))
+                if verify_file(args.key_gen):
+                    passwd = getpass("Enter the encryption key for the ft_otp file: \n")
+                    totp_interactive(args.key_gen,passwd,int(args.interactive))
             else:
                 print("ERROR SECONDS -> Try with a number greater than 1")
         except ValueError:

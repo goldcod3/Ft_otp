@@ -1,10 +1,12 @@
 import hmac
 from datetime import datetime
 from time import sleep, time
+from os.path import exists
+from getpass import getpass
 from cryptor import *
 
 # Default Variables
-format_date = '%Y-%m-%d -> %H:%M:%S'
+format_date = 'DATE: %Y-%m-%d - SECONDS -> %S'
 default_time_count = 30
 default_digest = 'SHA1'
 default_len = 6
@@ -12,8 +14,6 @@ default_file = "ft_otp.key"
 
 # Get time counter
 def get_time_key(time_count):
-    time_ = datetime.utcfromtimestamp(time())
-    timestr_ = datetime.strftime(time_, format_date)
     return str(int(time() / time_count))
 
 # Get HOTP Hash
@@ -82,6 +82,30 @@ def change_totp_key(password, new_key):
         return False
     except FileNotFoundError:
         verify_file(default_file)
+
+# Verify file 'ft_otp.key'
+def verify_file(file):
+    if file == default_file:
+        if exists(default_file) == False:
+            print("ERROR NOT FOUND FILE.KEY!")
+            new_key = get_random_key()
+            passwd = getpass("Enter the new encryption key of the ft_otp file [Base64]: \n")
+            with open(default_file,"wb") as w_file:
+                w_file.write(new_key)
+            if encrypt_file(default_file, passwd):
+                print("File 'Ft_otp.key successfull created.")
+                print("A password has been saved in the file 'ft_master.key'")
+            else:
+                passwd = get_random_pass()
+                encrypt_file(default_file, passwd)
+                print("File 'Ft_otp.key successfull created.")
+                print("ERROR PASSWORD -> A new random key has been generated in the file 'ft_master.key'")
+            with open("ft_master.key","wb") as w_master:
+                w_master.write(passwd.encode('utf-8'))
+        return True
+    else:
+        print("ERROR FILE.KEY -> Try with 'ft_otp.key'.")
+        return False
 
 # Interactive Mode TOTP
 def totp_interactive(file, passwd, sec):
