@@ -14,6 +14,7 @@ RUN echo "dev:42madrid" | chpasswd
 
 # Volume directory
 RUN mkdir -p /home/dev/src
+RUN mkdir -p /home/dev/out
 
 USER dev
 

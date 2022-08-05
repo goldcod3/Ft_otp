@@ -2,7 +2,8 @@
 I_TESTER = imgft
 TESTER = ft_otp
 
-V_TEST = $(PWD)/src:/home/dev/src
+V_CODE = $(PWD)/src:/home/dev/src
+V_TEST = $(PWD)/out:/home/dev/out
 
 all: dock
 # Ejecuta contenedor creado
@@ -11,7 +12,7 @@ exec:
 
 # Genera nuevo contenedor docker
 dock: image
-	@docker rm -fv $(TESTER) && docker run --name $(TESTER) -v $(V_TEST) -id $(I_TESTER)
+	@docker rm -fv $(TESTER) && docker run --name $(TESTER) -v $(V_CODE) -v $(V_TEST) -id $(I_TESTER)
 
 # Genera imagen docker
 image:
