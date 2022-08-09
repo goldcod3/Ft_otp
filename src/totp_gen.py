@@ -7,11 +7,14 @@ from encode import get_key
 
 # Default Variables
 banner = """
-    ┏━┳┓╋╋┏┓
-    ┃━┫┗┳━┫┗┳━┓
-    ┃┏┫┏┫╋┃┏┫╋┃
-    ┗┛┗━┻━┻━┫┏┛
-    ╋╋╋╋╋╋╋╋┗┛ github.com/goldcod3
+  __ _                _             
+ / _| |              (_)            
+| |_| |_   ___  _ __  _  ___  _ __  
+|  _| __| / _ \| '_ \| |/ _ \| '_ \ 
+| | | |_ | (_) | | | | | (_) | | | |
+|_|  \__| \___/|_| |_|_|\___/|_| |_|
+      ______                        
+     |______| github.com/goldcod3
 """
 format_date = '%Y-%m-%d %H:%M:%S UTC'
 default_digest = 'SHA1'
