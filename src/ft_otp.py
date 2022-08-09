@@ -1,7 +1,7 @@
 import argparse
 from getpass import getpass
 from encode import *
-from cryptor import *
+from totp_gen import *
 
 # Main
 def main():
@@ -10,9 +10,12 @@ def main():
     if args.key_gen != None and args.interactive == None:
         if verify_file(args.key_gen):
             passwd = getpass("Enter the encryption key for the ft_otp file: \n")
-            pin_ = get_totp(args.key_gen, passwd)
-            if pin_ != None:
-                print(pin_)
+            if args.verbose:
+                key_hex = get_key(args.key_gen, passwd)
+                if key_hex != None:
+                    verbose_totp(key_hex.decode('utf-8'))
+            else:    
+                get_totp_pin(args.key_gen, passwd)
     # [-g] Change key for totp and save on file 'ft_otp.key'
     if args.new_key != None:
         try:
@@ -30,7 +33,7 @@ def main():
     if args.new_pass != None:
         if verify_file('ft_otp.key'):
             old_pass = getpass("Enter the encryption key for the ft_otp file: \n")
-            if change_encrypt_pass(old_pass,args.new_pass):
+            if change_encrypt_pass(old_pass, args.new_pass):
                 print("SUCCESSFULL CHANGE THE ENCRYPTION KEY OF THE 'ft_otp.key'.")
     # Interactive Mode
     if args.interactive != None and args.key_gen != None:
@@ -38,7 +41,7 @@ def main():
             if int(args.interactive) > 1:
                 if verify_file(args.key_gen):
                     passwd = getpass("Enter the encryption key for the ft_otp file: \n")
-                    totp_interactive(args.key_gen,passwd,int(args.interactive))
+                    interactive_totp(args.key_gen, passwd, int(args.interactive))
             else:
                 print("ERROR SECONDS -> Try with a number greater than 1")
         except ValueError:
@@ -68,6 +71,7 @@ def config_args():
     # Bonus options   
     parser.add_argument("-p","--new-pass", default=None, help="[-p + 'new_pass_base64'] Set a new password Base64 for encrypt 'ft_otp.key'.")
     parser.add_argument("-i","--interactive", default=None, help="[-k + 'ft_otp.key' -i + seconds] Interactive mode.")
+    parser.add_argument("-v","--verbose", default=False, action='store_true', help="[-k + 'ft_otp.key' -v] Verbose Mode.") 
     parser.add_argument("-rk","--random-key", default=False, action='store_true', help="Generate a random key autentication in file 'key.hex'.") 
     parser.add_argument("-rp","--random-pass", default=False, action='store_true', help="Generate a random password Base64 for encrypt 'ft_otp.key'.")
     

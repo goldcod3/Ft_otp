@@ -3,7 +3,7 @@ FROM debian:latest
 # Install Dependencies
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install sudo zip vim -y
-RUN apt-get install python3 python3-pip -y
+RUN apt-get install oathtool python3 python3-pip -y
 RUN pip install cryptography
 
 # User target configuration
