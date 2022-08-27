@@ -60,4 +60,6 @@ make && make exec
 allowing code editing and execution. 
 
 ---
-Proyect in progress.
+Finished project.
+
+![lgomes-o's 42 ft_otp Score](https://badge42.vercel.app/api/v2/cl4osmqtg006109jvtxcd7k3u/project/2714212)
