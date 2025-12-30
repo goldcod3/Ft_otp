@@ -1,65 +1,92 @@
-# Ft_otp
-Proyect Ft_otp [2FA-TOTP] developed in the cybersecurity bootcamp at 42Madrid.
+## Ft_otp: Secure TOTP Password Generator
+
+After projects like get_next_line, Ft_otp represents a more advanced step within the 42Madrid cursus. Here, it’s not just about manipulating files or memory, but about diving into security and authentication: implementing a TOTP (Time-based One-Time Password) system capable of generating ephemeral passwords based on a master key.
 
 <img src='https://media.giphy.com/media/IgLIVXrBcID9cExa6r/giphy.gif' width=330 heigth= 330/>
 
-In this project, the objective is to implement a TOTP system (Time-based One-Time Password), which is able to generate ephemeral passwords from a master key.
-It will be based on the [RFC](https://datatracker.ietf.org/doc/html/rfc6238)
+---
+### 🌐What is Ft_otp?
 
-In the **src** directory you can find the source code made in python and you will be able to modify the algorithm parameters.
+Ft_otp is a tool that generates temporary passwords following the TOTP standard. These passwords are useful for two-factor authentication and are created from a master key that you define and protect with encryption.
+The project allows you to:
+- Implement the TOTP algorithm following [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238).
+- Generate and encrypt a master key (ft_otp.key).
+- Produce temporary passwords verifiable from another client sharing the secret key.
+- Explore security concepts such as HMAC and Base64 encryption.
 
-The **ft_onion(debian).zip** file in the directory **out** contains a script with its dependencies for Linux systems which will run without the need of python3.
+---
+### 🧩Project Objective
 
-# Script Options
+Create a TOTP generator that meets the following requirements:
+- Receive a master key as a seed.
+- Generate 6-digit time-based codes.
+- Allow verification from another client application with the same key and timer.
+- Ensure security by encrypting the master key and providing protected password options.
+
+### ⭐ Bonus Part
+
+Advanced options include:
+- Choosing and password-protecting the ft_otp.key master key, requiring it each time a new temporary code is generated.
+- Developing a graphical client that generates and validates master passwords.
+- Adding any other useful functionality to enhance security or usability.
+
+---
+### 📚Key Concepts
+
+To implement Ft_otp correctly, you need to understand:
+- [TOTP](https://datatracker.ietf.org/doc/html/rfc6238#section-4) (Time-based One-Time Password): Time-dependent one-time passwords.
+- [HOTP](https://datatracker.ietf.org/doc/html/rfc4226) (HMAC-based One-Time Password): Base algorithm for TOTP, replacing the counter with the current time.
+- [HMAC](https://datatracker.ietf.org/doc/html/rfc2104): Keyed-hash function used to ensure data integrity and authenticity.
+
+The TOTP formula is defined as:
+`TOTP value(K) = trunc(HOTP value(K, CT))`
+Where K is the secret key and CT is a counter derived from the current time. The result is a 6-digit PIN that can be validated from another client sharing the same secret key and timer.
+
+#### 🔐 Security and Encryption
+The TOTP key can be encrypted using Base64, and useful options were added (as indicated in the bonus) to protect the master key and control its usage.
+
+---
+### 💻Execution and Usage
+
+In the repository:
+- The src folder contains the source code in Python, allowing modification of algorithm parameters.
+- The ft_otp(debian).zip file in out includes a script with dependencies for Linux, running without the need to install Python 3.
+
+Script usage options:
 ```
-# Generate a new TOTP key/pin
+# Generar nueva clave/pin TOTP
 ./ft_otp -k ft_otp.key
-
-# Save a new key [hexadecimal - 64 characters] ft_otp.key.
+# Guardar una nueva clave hexadecimal de 64 caracteres
 ./ft_otp -g key.hex
-
-# Change the encryption Base64 password of the 'ft_otp.key' file
-./ft_otp -p P_l1F4g7hC5o3UWD273fcCmVJrfeCDVEG3D4aDCXaCI=
-
-# Interactive mode TOTP
+# Cambiar la contraseña de cifrado de ft_otp.key
+./ft_otp -p <key.hex_value>
+# Modo interactivo TOTP
 ./ft_otp -k ft_otp.key -i SECONDS
-
-# Generate a 64-character hexadecimal random key in a 'key.hex' file.
+# Generar clave aleatoria hexadecimal de 64 caracteres
 ./ft_otp -rk
-
-# Generate a Base64 random password.
+# Generar contraseña aleatoria Base64
 ./ft_otp -rp
-
-# Print help message
+# Mostrar ayuda
 ./ft_otp -h
 ```
 
-# Docker test
-A Dockerfile has been configured that generates a docker container with the software dependencies, 
-to speed up the deployment of the container a Makefile was configured.
+---
+### 🐳Docker Testing
 
-- Install '[Docker Desktop](https://www.docker.com/products/docker-desktop/)' and run the app.
-- Install 'make' and use the Makefile for buid a container and get a bash:
-```
-make && make exec
-```
-```
-# Build image and container
-->> make
-# Get a bash from container
-->> make exec
-# Build a new container
-->> make dock
-# Build image
-->> make image
-# Remove image and container
-->> make fclean
-```
+A Dockerfile has been set up to create a container with all dependencies:
+- Clone the repository
+- Install Docker Desktop
+- Use the Makefile to build and run the container: make && make exec
 
-- When you are inside the container, two volumes will be created synchronizing the **src** and **out** with the user's **/home** directory, 
-allowing code editing and execution. 
+Inside the container, the src and out directories are synchronized with your /home folder, allowing you to edit and run the code conveniently.
 
 ---
-Finished project.
+🚀 Conclusion
 
-![lgomes-o's 42 ft_otp Score](https://badge42.vercel.app/api/v2/cl4osmqtg006109jvtxcd7k3u/project/2714212)
+Ft_otp not only teaches TOTP and HMAC, but also combines:
+- Security and encryption
+- Secret key management
+- Development of interactive scripts and automation
+- Docker containers for fast deployment
+
+It’s a perfect project to consolidate knowledge in security, Python, and programming best practices before tackling more complex systems at 42Madrid.
